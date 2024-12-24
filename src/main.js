@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import getQueryParameter from "./getQueryParameter.js";
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color();
@@ -27,31 +28,23 @@ const canvas = document.querySelector("canvas.threejs");
 const controls = new OrbitControls(camera, canvas);
 controls.update();
 
-const renderer = new THREE.WebGLRenderer({ canvas });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.render(scene, camera);
 
-function getQueryParameter(param) {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(param);
-}
-
 const cubeRotationX = parseFloat(getQueryParameter("rotationX"));
-console.log(cubeRotationX);
 
 if (!isNaN(cubeRotationX)) {
   cubeMesh.userData.rotateXSpeed = cubeRotationX;
 } else {
   cubeMesh.userData.rotateXSpeed = 0;
 }
-
 function updateCubeColor() {
   const color = getQueryParameter("color");
   if (color && (/^#[0-9A-F]{6}$/i.test(color) || THREE.Color.NAMES[color])) {
     cubeMaterial.color.set(color);
   }
 }
-
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
